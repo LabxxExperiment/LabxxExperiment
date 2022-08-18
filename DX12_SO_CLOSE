@@ -1,0 +1,482 @@
+#pragma once
+
+class DXLAB
+{
+public:
+//Information
+	struct DXGI
+	{
+		IDXGIDebug* pIDXGIDebug;
+
+		IDXGIFactory7* pIDXGIFactory7 = nullptr;
+		IDXGIDevice* pIDXGIDevice = nullptr;
+		IDXGIDevice4* pIDXGIDevice4 = nullptr;
+		IDXGIAdapter4* pIDXGIAdapter4 = nullptr;
+
+		IDXGISwapChain1* pSwapChain1 = nullptr;
+		IDXGISwapChain4* pSwapChain4 = nullptr;
+
+		IDXGISurface* pSurface_0 = nullptr;
+		IDXGISurface* pSurface_1 = nullptr;
+
+		DXGI_SHARED_RESOURCE* pSharedResource = nullptr;
+
+		IDXGIOutput* pOutput_0 = nullptr;
+		IDXGIOutput* pOutput_1 = nullptr;
+		IDXGIOutput6* pOutput6_0 = nullptr;
+		IDXGIOutput6* pOutput6_1 = nullptr;
+
+		UINT FrameIndex = 0u;
+
+		//Lab
+		ID3D11Texture2D* pProgramTexture_1 = nullptr;
+	};
+	struct D3D
+	{
+		ID3D12Debug3* pDebug3;
+		ID3D12Device* pDevice;
+		ID3D12Device8* pDevice8;
+		ID3D12Device9* pDevice9;
+		ID3D12CommandQueue* pCommandQueue;
+		ID3D12CommandAllocator* pCommandAllocator;
+		ID3D12CommandList* pCommandList;
+		ID3D12GraphicsCommandList* pGCommandList;
+		ID3D12RootSignature* pRootSig;
+
+	};
+	struct D2D
+	{
+		ID2D1Factory7* pD2DFactory7 = nullptr;
+		ID2D1Device* pD2DDevice = nullptr;
+		ID2D1Device5* pD2DDevice5 = nullptr;
+		ID2D1Device6* pD2DDevice6 = nullptr;
+		ID2D1RenderTarget* pD2D1RenderTarget = nullptr;
+		ID2D1SolidColorBrush* pWhiteBrush = nullptr;
+		ID2D1SolidColorBrush* pBlueBrush = nullptr;
+		ID2D1SolidColorBrush* pRedBrush = nullptr;
+	};
+	struct DW
+	{
+		//DirectWrite
+		IDWriteFactory* pDwriteFactory = nullptr;
+		IDWriteTextFormat* pTextFormatDefault = nullptr;
+	};
+	struct DXi
+	{
+		DXGI_QUERY_VIDEO_MEMORY_INFO VidMemInfoLocal_start;
+		DXGI_QUERY_VIDEO_MEMORY_INFO VidMemInfoNonLocal_start;
+		DXGI_QUERY_VIDEO_MEMORY_INFO VidMemInfoLocal_end;
+		DXGI_QUERY_VIDEO_MEMORY_INFO VidMemInfoNonLocal_end;
+		DXGI_QUERY_VIDEO_MEMORY_INFO VidMemInfoLocal_0;
+		DXGI_QUERY_VIDEO_MEMORY_INFO VidMemInfoNonLocal_0;
+		DXGI_QUERY_VIDEO_MEMORY_INFO VidMemInfoLocal_1;
+		DXGI_QUERY_VIDEO_MEMORY_INFO VidMemInfoNonLocal_1;
+		INT64 Change_Local = 0u;
+		INT64 Change_Non_Local = 0u;
+		INT64 Change_Local_SE = 0u;
+		INT64 Change_Non_Local_SE = 0u;
+		INT64 CurrentUsageLocal = 0u;
+		INT64 CurrentUsageNonLocal = 0u;
+	};
+	struct DXr
+	{
+		ID3D12PipelineState* pPipeState;
+
+		ID3DBlob* pD3DBlob = nullptr;
+		ID3DBlob* pD3DBlobVertex = nullptr;
+		ID3DBlob* pD3DBlobPixel = nullptr;
+
+		ID3D12Heap* pHeapTest_0;
+		ID3D12Heap* pHeapTest_1;
+		ID3D12Heap* pHeapTest_2;
+		ID3D12Heap* pHeapTest_3;
+		ID3D12Resource* pResource_Test;
+
+		ID3D12Heap* pHeapRTV;
+		ID3D12Resource* pResourceRTV_0;
+		ID3D12Resource* pResourceRTV_1;
+		ID3D12DescriptorHeap* pDescriptorHeapRTV;
+
+		ID3D12Heap* pHeapIndexVertex;
+		ID3D12Resource* pIndexResource;
+		ID3D12Resource* pVertexResource;
+
+
+	};
+	struct DXf
+	{
+		struct index
+		{
+			UINT one, two, three;
+		};
+		struct vertex2D
+		{
+			float x, y, r, g, b;
+		};
+	};
+
+	static DXGI pDXGI;
+	static D3D pD3D;
+	static D2D pD2D;
+	static DW pDW;
+	static DXi pDXi;
+	static DXr pDXr;
+	static DXf pDXf;
+
+//Functions
+	static void DXGIStart(HWND hWnd, int wwidth, int wheight)
+	{
+		HRESULT hr = S_OK;
+
+		//DXGI
+		DXGI_GPU_PREFERENCE DXGIGpuPreference = DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE;
+		hr = CreateDXGIFactory2(DXGI_CREATE_FACTORY_DEBUG, __uuidof(IDXGIFactory7), reinterpret_cast<void**>(&pDXGI.pIDXGIFactory7));
+		pDXGI.pIDXGIFactory7->EnumAdapterByGpuPreference(0u, DXGIGpuPreference, __uuidof(IDXGIAdapter4), reinterpret_cast<void**>(&pDXGI.pIDXGIAdapter4));
+		pDXGI.pIDXGIFactory7->MakeWindowAssociation(hWnd, 0u);
+		hr = D3D12GetDebugInterface(__uuidof(ID3D12Debug3), reinterpret_cast<void**>(&pD3D.pDebug3));
+		pD3D.pDebug3->EnableDebugLayer();
+		//DX12 -DEVICE-
+		hr = D3D12CreateDevice(pDXGI.pIDXGIAdapter4, D3D_FEATURE_LEVEL_12_1, __uuidof(ID3D12Device), reinterpret_cast<void**>(&pD3D.pDevice));
+		hr = pD3D.pDevice->QueryInterface(__uuidof(ID3D12Device8), reinterpret_cast<void**>(&pD3D.pDevice8));
+		D3D12_FEATURE_DATA_D3D12_OPTIONS FeatureOptions;
+		hr = pD3D.pDevice8->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &FeatureOptions, sizeof(FeatureOptions));
+		FeatureOptions.ResourceHeapTier;
+		hr = pDXGI.pIDXGIAdapter4->QueryVideoMemoryInfo(0u, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &pDXi.VidMemInfoLocal_start);
+		hr = pDXGI.pIDXGIAdapter4->QueryVideoMemoryInfo(0u, DXGI_MEMORY_SEGMENT_GROUP_NON_LOCAL, &pDXi.VidMemInfoNonLocal_start);
+		//DX12 -QUEUE-
+		D3D12_COMMAND_QUEUE_DESC QueueDesc;
+		QueueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+		QueueDesc.Priority = D3D12_COMMAND_QUEUE_PRIORITY_HIGH;
+		QueueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_DISABLE_GPU_TIMEOUT;
+		QueueDesc.NodeMask = 0u;
+		hr = pD3D.pDevice8->CreateCommandQueue(&QueueDesc, __uuidof(ID3D12CommandQueue), reinterpret_cast<void**>(&pD3D.pCommandQueue));
+		//DX12 -ALLOCATOR-
+		hr = pD3D.pDevice8->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), reinterpret_cast<void**>(&pD3D.pCommandAllocator));
+		//DX12 -LIST-
+		hr = pD3D.pDevice8->CreateCommandList(0u, D3D12_COMMAND_LIST_TYPE_DIRECT, pD3D.pCommandAllocator, nullptr, __uuidof(ID3D12GraphicsCommandList), reinterpret_cast<void**>(&pD3D.pGCommandList));
+		//Initialization -STUFF-
+		//HEAP 0
+		D3D12_HEAP_DESC HeapTestDesc_0;
+		HeapTestDesc_0.SizeInBytes = (128u * 1u);
+		HeapTestDesc_0.Flags = D3D12_HEAP_FLAG_ALLOW_ONLY_BUFFERS; //D3D12_HEAP_FLAG_ALLOW_ONLY_BUFFERS || D3D12_HEAP_FLAG_ALLOW_ONLY_NON_RT_DS_TEXTURES
+		HeapTestDesc_0.Alignment = D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
+		HeapTestDesc_0.Properties.Type = D3D12_HEAP_TYPE_UPLOAD;
+		HeapTestDesc_0.Properties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+		HeapTestDesc_0.Properties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+		HeapTestDesc_0.Properties.CreationNodeMask = 0u;
+		HeapTestDesc_0.Properties.VisibleNodeMask = 0u;
+		//HEAP 1
+		D3D12_HEAP_DESC HeapTestDesc_1;
+		HeapTestDesc_1.SizeInBytes = (128u * 1u);
+		HeapTestDesc_1.Flags = D3D12_HEAP_FLAG_ALLOW_ONLY_BUFFERS;
+		HeapTestDesc_1.Alignment = D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
+		HeapTestDesc_1.Properties.Type = D3D12_HEAP_TYPE_DEFAULT;
+		HeapTestDesc_1.Properties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+		HeapTestDesc_1.Properties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+		HeapTestDesc_1.Properties.CreationNodeMask = 0u;
+		HeapTestDesc_1.Properties.VisibleNodeMask = 0u;
+		pD3D.pDevice8->CreateHeap(&HeapTestDesc_0, __uuidof(ID3D12Heap), reinterpret_cast<void**>(&pDXr.pHeapTest_0));
+		pD3D.pDevice8->CreateHeap(&HeapTestDesc_1, __uuidof(ID3D12Heap), reinterpret_cast<void**>(&pDXr.pHeapTest_1));
+		auto tst1 = pDXr.pHeapTest_0->Release();
+		auto tst2 = pDXr.pHeapTest_1->Release();
+		//STEP 1 INFORMATION
+		DXf::index testindex[] =
+		{
+			0u,1u,2u
+		};
+		DXf::vertex2D testvertex[] =
+		{
+			{ 0.0f,	  0.5f,	0.0f,0.0f,1.0f},
+			{-0.5f,	 -0.5f,	0.0f,0.0f,1.0f},
+			{ 0.5f,	 -0.5f,	0.0f,0.0f,1.0f}
+		};
+		//STEP 2 HEAP
+		//RTV FUCKING CFUCK
+		//CALCULATION - 32BIT,4BYTE, 307 200 PIXELS || 4BYTE * 307 200 = 1 228 800 || TOTAL = 2 490 368 = 2.49MB
+		//CALCULATION - 2 BYTE ALIGNMENT
+		UINT RTVCALC = 4u/*DXGI*/ * 2u/*RTV*/;
+		UINT SCREENSIZE = (UINT)wwidth * (UINT)wheight;
+		UINT TOTALOFFSET = SCREENSIZE * RTVCALC;
+		UINT ALINUM = ceil((float)TOTALOFFSET / (float)D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT);
+		D3D12_HEAP_DESC RTVHeapDesc;
+		RTVHeapDesc.SizeInBytes = ALINUM * (UINT)D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
+		RTVHeapDesc.Flags = D3D12_HEAP_FLAG_ALLOW_DISPLAY;
+		RTVHeapDesc.Alignment = (UINT)D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
+		RTVHeapDesc.Properties.Type = D3D12_HEAP_TYPE_DEFAULT;
+		RTVHeapDesc.Properties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+		RTVHeapDesc.Properties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+		RTVHeapDesc.Properties.CreationNodeMask = 0u;
+		RTVHeapDesc.Properties.VisibleNodeMask = 0u;
+		//INDEX VERTEX
+		D3D12_HEAP_DESC IndexVertexHeapDesc;
+		IndexVertexHeapDesc.SizeInBytes = D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT * 2u;
+		IndexVertexHeapDesc.Flags = D3D12_HEAP_FLAG_ALLOW_ONLY_BUFFERS; //D3D12_HEAP_FLAG_ALLOW_ONLY_BUFFERS || D3D12_HEAP_FLAG_ALLOW_ONLY_NON_RT_DS_TEXTURES
+		IndexVertexHeapDesc.Alignment = D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
+		IndexVertexHeapDesc.Properties.Type = D3D12_HEAP_TYPE_UPLOAD;
+		IndexVertexHeapDesc.Properties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+		IndexVertexHeapDesc.Properties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+		IndexVertexHeapDesc.Properties.CreationNodeMask = 0u;
+		IndexVertexHeapDesc.Properties.VisibleNodeMask = 0u;
+
+		//STEP 3 RESOURCE
+		D3D12_RESOURCE_DESC RTVResoDesc;
+		RTVResoDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+		RTVResoDesc.Alignment = 0u;
+		RTVResoDesc.Width = (UINT64)wwidth;
+		RTVResoDesc.Height = (UINT64)wheight;
+		RTVResoDesc.DepthOrArraySize = 1u;
+		RTVResoDesc.MipLevels = 1u;
+		RTVResoDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+		RTVResoDesc.SampleDesc = { 1u,0u };
+		RTVResoDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+		RTVResoDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+
+		D3D12_RESOURCE_DESC IndexResoDesc;
+		IndexResoDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+		IndexResoDesc.Alignment = D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
+		IndexResoDesc.Width = sizeof(testindex);
+		IndexResoDesc.Height = 1u;
+		IndexResoDesc.DepthOrArraySize = 1u;
+		IndexResoDesc.MipLevels = 1;
+		IndexResoDesc.Format = DXGI_FORMAT_UNKNOWN;
+		IndexResoDesc.SampleDesc.Count = 1u;
+		IndexResoDesc.SampleDesc.Quality = 0u;
+		IndexResoDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+		IndexResoDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+		D3D12_RESOURCE_DESC VertexResoDesc;
+		VertexResoDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+		VertexResoDesc.Alignment = D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
+		VertexResoDesc.Width = sizeof(testvertex); //TBD
+		VertexResoDesc.Height = 1u;
+		VertexResoDesc.DepthOrArraySize = 1u;
+		VertexResoDesc.MipLevels = 1u;
+		VertexResoDesc.Format = DXGI_FORMAT_UNKNOWN;
+		VertexResoDesc.SampleDesc.Count = 1;
+		VertexResoDesc.SampleDesc.Quality = 0u;
+		VertexResoDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+		VertexResoDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+		D3D12_CLEAR_VALUE pOptimizedClearValue;
+		pOptimizedClearValue.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+		pOptimizedClearValue.Color[0] = 0.0f;
+		pOptimizedClearValue.Color[1] = 0.0f;
+		pOptimizedClearValue.Color[2] = 0.0f;
+		pOptimizedClearValue.Color[3] = 0.0f;
+		pOptimizedClearValue.DepthStencil.Depth = 0.0f;
+		pOptimizedClearValue.DepthStencil.Stencil = 0.0f;
+		//STEP 4 VIEW
+		D3D12_INDEX_BUFFER_VIEW IndexBuffView;
+		IndexBuffView.BufferLocation;//FILLED
+		IndexBuffView.SizeInBytes = IndexResoDesc.Width;
+		IndexBuffView.Format = DXGI_FORMAT_R32_UINT;
+		D3D12_VERTEX_BUFFER_VIEW VertexBuffView;
+		VertexBuffView.BufferLocation;//FILLED
+		VertexBuffView.SizeInBytes = VertexResoDesc.Width;
+		VertexBuffView.StrideInBytes = sizeof(DXLAB::DXf::vertex2D);
+		ID3DBlob* pBlobVertex;
+		ID3DBlob* pBlobPixel;
+		//DX12 -PIPELINE-
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC PipeDesc{};
+		//Stream Output
+		PipeDesc.StreamOutput.pSODeclaration = NULL;
+		PipeDesc.StreamOutput.NumEntries = 0u;
+		PipeDesc.StreamOutput.pBufferStrides = 0u;
+		PipeDesc.StreamOutput.NumStrides = 0u;
+		PipeDesc.StreamOutput.RasterizedStream = 0u;
+		//Blend State
+		PipeDesc.BlendState.AlphaToCoverageEnable = FALSE;
+		PipeDesc.BlendState.IndependentBlendEnable = FALSE;
+		//PipeDesc.BlendState.RenderTarget->BlendEnable = TRUE;
+		PipeDesc.BlendState.RenderTarget->BlendEnable = FALSE;
+		PipeDesc.BlendState.RenderTarget->LogicOpEnable = FALSE;
+		PipeDesc.BlendState.RenderTarget->SrcBlend = D3D12_BLEND_ZERO;
+		PipeDesc.BlendState.RenderTarget->DestBlend = D3D12_BLEND_ZERO;
+		PipeDesc.BlendState.RenderTarget->BlendOp = D3D12_BLEND_OP_ADD;
+		PipeDesc.BlendState.RenderTarget->SrcBlendAlpha = D3D12_BLEND_ZERO;
+		PipeDesc.BlendState.RenderTarget->DestBlendAlpha = D3D12_BLEND_ZERO;
+		PipeDesc.BlendState.RenderTarget->BlendOpAlpha = D3D12_BLEND_OP_ADD;
+		PipeDesc.BlendState.RenderTarget->LogicOp = D3D12_LOGIC_OP_COPY;
+		PipeDesc.BlendState.RenderTarget->RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+		PipeDesc.SampleMask = 0xFFFFFFFF;
+		//Rasterizer
+		PipeDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
+		PipeDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+		PipeDesc.RasterizerState.FrontCounterClockwise = TRUE;
+		PipeDesc.RasterizerState.DepthBias = 0;
+		PipeDesc.RasterizerState.DepthBiasClamp = 0.0f;
+		PipeDesc.RasterizerState.SlopeScaledDepthBias = 0.0f;
+		PipeDesc.RasterizerState.DepthClipEnable = FALSE;
+		PipeDesc.RasterizerState.MultisampleEnable = FALSE;
+		PipeDesc.RasterizerState.AntialiasedLineEnable = FALSE;
+		PipeDesc.RasterizerState.ForcedSampleCount = 0u;
+		PipeDesc.RasterizerState.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+		//Depth Stencil
+		PipeDesc.DepthStencilState.DepthEnable = FALSE;
+		PipeDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+		PipeDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+		PipeDesc.DepthStencilState.StencilEnable = FALSE;
+		PipeDesc.DepthStencilState.StencilReadMask = 0xFFFFFFFF;
+		PipeDesc.DepthStencilState.StencilWriteMask = 0xFFFFFFFF;
+		PipeDesc.DepthStencilState.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+		PipeDesc.DepthStencilState.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_INCR;
+		PipeDesc.DepthStencilState.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+		PipeDesc.DepthStencilState.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+		PipeDesc.DepthStencilState.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+		PipeDesc.DepthStencilState.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_DECR;
+		PipeDesc.DepthStencilState.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+		PipeDesc.DepthStencilState.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+		D3D12_INPUT_ELEMENT_DESC IEDesc[] =
+		{
+			{"Position",0u,DXGI_FORMAT_R32G32_FLOAT,0u,0u,D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,0u},
+			{"Color",0u,DXGI_FORMAT_R32G32B32_FLOAT,0u,8u,D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,0u},
+		};
+		PipeDesc.InputLayout.pInputElementDescs = IEDesc;
+		PipeDesc.InputLayout.NumElements = 2u;
+		PipeDesc.IBStripCutValue = D3D12_INDEX_BUFFER_STRIP_CUT_VALUE_DISABLED;
+		PipeDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+		PipeDesc.NumRenderTargets = 2u;
+		PipeDesc.RTVFormats[0] = DXGI_FORMAT_B8G8R8A8_UNORM;
+		PipeDesc.RTVFormats[1] = DXGI_FORMAT_B8G8R8A8_UNORM;
+		PipeDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;
+		PipeDesc.SampleDesc.Count = 1u;
+		PipeDesc.SampleDesc.Quality = 0u;
+		PipeDesc.NodeMask = 0u;
+		D3D12_CACHED_PIPELINE_STATE CachePipeState;
+		CachePipeState.pCachedBlob = nullptr;
+		CachePipeState.CachedBlobSizeInBytes = 0;
+		PipeDesc.CachedPSO = CachePipeState;
+		PipeDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
+		//DXGI -SWAPCHAIN-
+		DXGI_SWAP_CHAIN_DESC1 SwapChainDesc1 = {};
+		ZeroMemory(&SwapChainDesc1, sizeof(SwapChainDesc1));
+		SwapChainDesc1.Width = 0u;
+		SwapChainDesc1.Height = 0u;
+		SwapChainDesc1.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+		SwapChainDesc1.Stereo = false;
+		SwapChainDesc1.SampleDesc.Count = 1u;
+		SwapChainDesc1.SampleDesc.Quality = 0u;
+		SwapChainDesc1.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+		SwapChainDesc1.BufferCount = 2u;
+		SwapChainDesc1.Scaling = DXGI_SCALING_NONE;
+		SwapChainDesc1.SwapEffect = DXGI_SWAP_EFFECT_FLIP_SEQUENTIAL;
+		SwapChainDesc1.AlphaMode = DXGI_ALPHA_MODE_IGNORE;
+		SwapChainDesc1.Flags = 0u;/*DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING*/
+		//DX12 -ROOT SIG-
+		D3D12_DESCRIPTOR_HEAP_DESC DescHeapRTV;
+		DescHeapRTV.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+		DescHeapRTV.NumDescriptors = 2u;
+		DescHeapRTV.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+		DescHeapRTV.NodeMask = 0u;
+		D3D12_CPU_DESCRIPTOR_HANDLE DescriptorHeapHandleRTV_0;
+		D3D12_CPU_DESCRIPTOR_HANDLE DescriptorHeapHandleRTV_1;
+		D3D12_RENDER_TARGET_VIEW_DESC ViewDescRTV;
+		ViewDescRTV.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+		ViewDescRTV.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+		ViewDescRTV.Texture2D.MipSlice = 0;
+		ViewDescRTV.Texture2D.PlaneSlice = 0;
+		ID3DBlob* pRootSigSerial;
+		D3D12_VERSIONED_ROOT_SIGNATURE_DESC RootSigVersDesc;
+		RootSigVersDesc.Version = D3D_ROOT_SIGNATURE_VERSION_1_1;
+		RootSigVersDesc.Desc_1_1.NumParameters = 0u;
+		RootSigVersDesc.Desc_1_1.pParameters = NULL;
+		RootSigVersDesc.Desc_1_1.NumStaticSamplers = 0u;
+		RootSigVersDesc.Desc_1_1.pStaticSamplers = NULL;
+		RootSigVersDesc.Desc_1_1.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+		D3D12_VIEWPORT MainView;
+		MainView.TopLeftX = 0.0f;
+		MainView.TopLeftY = 0.0f;
+		MainView.Width = (float)wwidth;
+		MainView.Height = (float)wheight;
+		MainView.MinDepth = 0.0f;
+		MainView.MaxDepth = 1.0f;
+		D3D12_RECT MainRect;
+		MainRect.left = 0;
+		MainRect.right = wwidth;
+		MainRect.top = 0;
+		MainRect.bottom = wheight;
+		float rgbaCLEAR[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+
+		//STEP 2 HEAP
+		hr = pDXGI.pIDXGIAdapter4->QueryVideoMemoryInfo(0u, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &pDXi.VidMemInfoLocal_0);
+		hr = pDXGI.pIDXGIAdapter4->QueryVideoMemoryInfo(0u, DXGI_MEMORY_SEGMENT_GROUP_NON_LOCAL, &pDXi.VidMemInfoNonLocal_0);
+		hr = pD3D.pDevice8->CreateHeap(&IndexVertexHeapDesc, __uuidof(ID3D12Heap), reinterpret_cast<void**>(&pDXr.pHeapIndexVertex));
+		hr = pDXGI.pIDXGIAdapter4->QueryVideoMemoryInfo(0u, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &pDXi.VidMemInfoLocal_1);
+		hr = pDXGI.pIDXGIAdapter4->QueryVideoMemoryInfo(0u, DXGI_MEMORY_SEGMENT_GROUP_NON_LOCAL, &pDXi.VidMemInfoNonLocal_1);
+
+		//STEP 3 RESOURCE
+		hr = pD3D.pDevice8->CreateCommittedResource(&RTVHeapDesc.Properties, D3D12_HEAP_FLAG_ALLOW_DISPLAY,
+			&RTVResoDesc, D3D12_RESOURCE_STATE_RENDER_TARGET, &pOptimizedClearValue,
+			__uuidof(ID3D12Resource), reinterpret_cast<void**>(&pDXr.pResourceRTV_0));
+		hr = pD3D.pDevice8->CreateCommittedResource(&RTVHeapDesc.Properties, D3D12_HEAP_FLAG_ALLOW_DISPLAY,
+			&RTVResoDesc, D3D12_RESOURCE_STATE_RENDER_TARGET, &pOptimizedClearValue,
+			__uuidof(ID3D12Resource), reinterpret_cast<void**>(&pDXr.pResourceRTV_1));
+
+		hr = pD3D.pDevice8->CreatePlacedResource(pDXr.pHeapIndexVertex, 65536u * 0u, &IndexResoDesc, D3D12_RESOURCE_STATE_INDEX_BUFFER | D3D12_RESOURCE_STATE_GENERIC_READ, NULL,
+			__uuidof(ID3D12Resource), reinterpret_cast<void**>(&pDXr.pIndexResource));
+		hr = pD3D.pDevice8->CreatePlacedResource(pDXr.pHeapIndexVertex, 65536u * 1u, &VertexResoDesc, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER | D3D12_RESOURCE_STATE_GENERIC_READ, NULL,
+			__uuidof(ID3D12Resource), reinterpret_cast<void**>(&pDXr.pVertexResource));
+
+		//STEP 4 VIEW
+		hr = D3DReadFileToBlob(L"First_VS.cso", &pBlobVertex);
+		hr = D3DReadFileToBlob(L"First_PS.cso", &pBlobPixel);
+		PipeDesc.VS.pShaderBytecode = pBlobVertex->GetBufferPointer();
+		PipeDesc.VS.BytecodeLength = pBlobVertex->GetBufferSize();
+		PipeDesc.PS.pShaderBytecode = pBlobPixel->GetBufferPointer();
+		PipeDesc.PS.BytecodeLength = pBlobPixel->GetBufferSize();
+
+		IndexBuffView.BufferLocation = pDXr.pIndexResource->GetGPUVirtualAddress();
+		VertexBuffView.BufferLocation = pDXr.pVertexResource->GetGPUVirtualAddress();
+
+		hr = pDXGI.pIDXGIFactory7->CreateSwapChainForHwnd(pD3D.pCommandQueue, hWnd, &SwapChainDesc1, NULL, NULL, &pDXGI.pSwapChain1);
+		hr = pDXGI.pSwapChain1->QueryInterface(__uuidof(IDXGISwapChain4), reinterpret_cast<void**>(&pDXGI.pSwapChain4));
+		
+		hr = pD3D.pDevice8->CreateDescriptorHeap(&DescHeapRTV, __uuidof(ID3D12DescriptorHeap), reinterpret_cast<void**>(&pDXr.pDescriptorHeapRTV));
+
+		UINT DescriptorHeapHandleIncrementRTV = pD3D.pDevice8->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV); //INCREMENT
+		DescriptorHeapHandleRTV_0 = pDXr.pDescriptorHeapRTV->GetCPUDescriptorHandleForHeapStart(); //HANDLE
+		DescriptorHeapHandleRTV_1 = pDXr.pDescriptorHeapRTV->GetCPUDescriptorHandleForHeapStart();
+		DescriptorHeapHandleRTV_1.ptr = DescriptorHeapHandleRTV_1.ptr + DescriptorHeapHandleIncrementRTV;
+
+		hr = pDXGI.pSwapChain4->GetBuffer(0u, __uuidof(ID3D12Resource), reinterpret_cast<void**>(&pDXr.pResourceRTV_0));
+		hr = pDXGI.pSwapChain4->GetBuffer(1u, __uuidof(ID3D12Resource), reinterpret_cast<void**>(&pDXr.pResourceRTV_1));
+		pD3D.pDevice8->CreateRenderTargetView(pDXr.pResourceRTV_0, &ViewDescRTV, DescriptorHeapHandleRTV_0);		
+		pD3D.pDevice8->CreateRenderTargetView(pDXr.pResourceRTV_1, &ViewDescRTV, DescriptorHeapHandleRTV_1);		
+
+		hr = D3D12SerializeVersionedRootSignature(&RootSigVersDesc, &pRootSigSerial, NULL);
+		hr = pD3D.pDevice8->CreateRootSignature(0u, pRootSigSerial->GetBufferPointer(), pRootSigSerial->GetBufferSize(), __uuidof(ID3D12RootSignature), reinterpret_cast<void**>(&pD3D.pRootSig));
+		PipeDesc.pRootSignature = pD3D.pRootSig;
+		hr = pD3D.pDevice8->CreateGraphicsPipelineState(&PipeDesc, __uuidof(ID3D12PipelineState), reinterpret_cast<void**>(&pDXr.pPipeState));
+
+		//FILL COMMAND LIST
+		pD3D.pGCommandList->SetPipelineState(pDXr.pPipeState);
+		pD3D.pGCommandList->SetGraphicsRootSignature(pD3D.pRootSig);
+		pD3D.pGCommandList->RSSetViewports(1u, &MainView);
+		pD3D.pGCommandList->RSSetScissorRects(1u, &MainRect);
+		pD3D.pGCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		pD3D.pGCommandList->IASetIndexBuffer(&IndexBuffView);
+		pD3D.pGCommandList->IASetVertexBuffers(0u, 1u, &VertexBuffView);
+		pD3D.pGCommandList->OMSetRenderTargets(1u, &DescriptorHeapHandleRTV_0, TRUE, NULL/*DEPTH STENCIL*/);
+		pD3D.pGCommandList->ClearRenderTargetView(DescriptorHeapHandleRTV_0, rgbaCLEAR, 1u, &MainRect);
+		pD3D.pGCommandList->DrawIndexedInstanced(3u, 1u, 0u, 0u, 0u);
+
+		hr = pD3D.pGCommandList->Close();
+		pD3D.pCommandQueue->ExecuteCommandLists(1u, reinterpret_cast<ID3D12CommandList**>(&pD3D.pGCommandList));
+
+
+
+
+
+
+		//pDXGI.pIDXGIAdapter4->QueryVideoMemoryInfo(0u, DXGI_MEMORY_SEGMENT_GROUP_LOCAL, &pDXi.VidMemInfoLocal_end);
+		//pDXGI.pIDXGIAdapter4->QueryVideoMemoryInfo(0u, DXGI_MEMORY_SEGMENT_GROUP_NON_LOCAL, &pDXi.VidMemInfoNonLocal_end);
+	}
+
+	static void LoadRes()
+	{
+		
+	}
+
+	static void testloop()
+	{
+
+	}
+};
