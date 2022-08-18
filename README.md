@@ -1,8 +1,8 @@
 - 👋 Hi, I’m @LabxxExperiment
-- 👀 I’m interested in DX11
-- 🌱 I’m currently learning DX11
-- 💞️ I’m looking to collaborate on DX11
-- 📫 How to reach me DX11
+- 👀 I’m interested in DX12
+- 🌱 I’m currently learning DX12
+- 💞️ I’m not looking to collaborate on DX12
+- 📫 How to reach me DX12
 
 <!---
 LabxxExperiment/LabxxExperiment is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
