@@ -95,7 +95,7 @@
 		D3D12_VERTEX_BUFFER_VIEW VertexBuffView;
 		VertexBuffView.BufferLocation; //FILLED LINE 266
 		VertexBuffView.SizeInBytes = VertexResoDesc.Width;
-		VertexBuffView.StrideInBytes = sizeof(DXLAB::DXf::vertex2D);
+		VertexBuffView.StrideInBytes = sizeof(testvertex[0]);
 		ID3DBlob* pBlobVertex;
 		ID3DBlob* pBlobPixel;
 		
