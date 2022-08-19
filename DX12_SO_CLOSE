@@ -45,8 +45,8 @@
 			{-0.5f,	 -0.5f,	0.0f,0.0f,1.0f},
 			{ 0.5f,	 -0.5f,	0.0f,0.0f,1.0f}
 		};
-		
-		//RTV RESOURCE DESC
+		//RESOURCE STRUCTS
+		//RTV
 		D3D12_RESOURCE_DESC RTVResoDesc;
 		RTVResoDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 		RTVResoDesc.Alignment = 0u;
@@ -58,8 +58,7 @@
 		RTVResoDesc.SampleDesc = { 1u,0u };
 		RTVResoDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 		RTVResoDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
-		
-		//INDEX RESOURCE DESC
+		//INDEX
 		D3D12_RESOURCE_DESC IndexResoDesc;
 		IndexResoDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 		IndexResoDesc.Alignment = D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
@@ -72,8 +71,7 @@
 		IndexResoDesc.SampleDesc.Quality = 0u;
 		IndexResoDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 		IndexResoDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
-		
-		//VERTEX RESOURCE DESC
+		//VERTEX
 		D3D12_RESOURCE_DESC VertexResoDesc;
 		VertexResoDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 		VertexResoDesc.Alignment = D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
@@ -87,19 +85,20 @@
 		VertexResoDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 		VertexResoDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
-		//STEP 4 VIEW STRUCTS
+		//VIEW STRUCTS
+		//INDEX
 		D3D12_INDEX_BUFFER_VIEW IndexBuffView;
-		IndexBuffView.BufferLocation; //FILLED LINE 266
+		IndexBuffView.BufferLocation; //FILLED LINE 265
 		IndexBuffView.SizeInBytes = IndexResoDesc.Width;
 		IndexBuffView.Format = DXGI_FORMAT_R32_UINT;
-		
+		VERTEX
 		D3D12_VERTEX_BUFFER_VIEW VertexBuffView;
-		VertexBuffView.BufferLocation; //FILLED LINE 267
+		VertexBuffView.BufferLocation; //FILLED LINE 266
 		VertexBuffView.SizeInBytes = VertexResoDesc.Width;
 		VertexBuffView.StrideInBytes = sizeof(DXLAB::DXf::vertex2D);
 		ID3DBlob* pBlobVertex;
 		ID3DBlob* pBlobPixel;
-
+		
 		//DX12 -PIPELINE-
 		D3D12_GRAPHICS_PIPELINE_STATE_DESC PipeDesc{};
 		//Stream Output
